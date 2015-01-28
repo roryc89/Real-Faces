@@ -27,8 +27,14 @@ var RealTHREE = function (xMinBoundary, xMaxBoundary, zMinBoundary, zMaxBoundary
   this.raycaster = new THREE.Raycaster( new THREE.Vector3(), new THREE.Vector3( 0, - 1, 0 ), 0, 10 );
 
   this.renderer = new THREE.WebGLRenderer();
+  this.renderer.domElement.id = 'realFacesCanvas';
+  this.renderer.domElement.style.zIndex = 1;
   this.renderer.setClearColor( 0xffffff );
   this.renderer.setSize( window.innerWidth, window.innerHeight );
+
+  // document.getElementById('blocker').style.zIndex = 0;
+
+  // document.getElementById('roomURL').style.zIndex = 5;
 
   document.body.appendChild( this.renderer.domElement );
 
@@ -43,9 +49,9 @@ RealTHREE.prototype.createSceneOutdoors = function () {
 
   // Tiled floor
   // note: 4x4 checkboard pattern scaled so that each square is 25 by 25 pixels.
-  var floorTexture = new THREE.ImageUtils.loadTexture( 'images/checkerboard.jpg' );
+  var floorTexture = new THREE.ImageUtils.loadTexture( 'images/grass2.jpg' );
   floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
-  floorTexture.repeat.set( 10, 10 );
+  floorTexture.repeat.set( 1, 1 );
   // DoubleSide: render texture on both sides of mesh
   var floorMaterial = new THREE.MeshBasicMaterial( { map: floorTexture, side: THREE.DoubleSide } );
   var floorGeometry = new THREE.PlaneBufferGeometry(this.sceneVars.sceneSize, this.sceneVars.sceneSize, 1, 1);
@@ -320,11 +326,11 @@ RealTHREE.prototype.pointerLock = function () {
 
       if ( document.pointerLockElement === element || document.mozPointerLockElement === element || document.webkitPointerLockElement === element ) {
 
-        if(!realFaces.webrtc.webcam){
-          document.getElementById('webcamWarning').style.visibility = 'visible';
-        }else{
-          document.getElementById('webcamWarning').style.visibility = 'hidden';
-        }
+        // if(!realFaces.webrtc.webcam){
+        //   document.getElementById('webcamWarning').style.visibility = 'visible';
+        // }else{
+        //   document.getElementById('webcamWarning').style.visibility = 'hidden';
+        // }
 
         realFaces.THREE.controls.enabled = true;
 
@@ -332,11 +338,11 @@ RealTHREE.prototype.pointerLock = function () {
 
       } else {
 
-        if(!realFaces.webrtc.webcam){
-          document.getElementById('webcamWarning').style.visibility = 'visible';
-        }else{
-          document.getElementById('webcamWarning').style.visibility = 'hidden';
-        }
+        // if(!realFaces.webrtc.webcam){
+        //   document.getElementById('webcamWarning').style.visibility = 'visible';
+        // }else{
+        //   document.getElementById('webcamWarning').style.visibility = 'hidden';
+        // }
 
         realFaces.THREE.controls.enabled = false;
 

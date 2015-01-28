@@ -41,7 +41,9 @@ var RealWebRTC =  function (clientID) {
     //variable that allows pointer lock
     this.webcam = true;
     // you can name it anything
-    this.joinRoom('realTalkClient');
+    this.joinRoom(realFaces.roomName);
+
+    playerEvents.emit('joined_room');
   });
 
   // //OVERWRITES VANILLA LIBRARY METHOD
@@ -58,8 +60,46 @@ var RealWebRTC =  function (clientID) {
 
   window.webRTCMain = this;
   setInterval(function(){
-    window.webRTCMain.webrtc.setVolumeForAll(0);
+    window.webRTCMain.webrtc.setVolumeForAll(null, true);
   },500);
+
+  this.speaking = false;
+
+  this.webrtc.setVolumeForAll = function (harkVolume, dontChangeHarkVolume) {
+      // var volume;
+      // //console.log('setting volume', harkVolume, dontChangeHarkVolume);
+
+      // // Strange semantics due to SimpleWebRTC workaround
+      // // SimpleWebRTC lowers volume of others when user is talking
+      // if (!dontChangeHarkVolume){
+      //   if (harkVolume === 1){
+      //     this.speaking = false;
+      //     volume = 1;
+      //   }else if(harkVolume === 0.25){
+      //     this.speaking = true;
+      //     volume = 0.25;
+      //   }
+      // }else if (this.speaking === false){
+      //   volume = 1;
+      // }else if (this.speaking === true){
+      //   volume = 0.25;
+      // }
+
+      var peers = realFaces.webrtc.webrtc.webrtc.peers;
+
+      peers.forEach(function (peer) {
+          if (peer.socketID){
+            var vdm = volumeDistanceModifier(peer.socketID);
+            //console.log('vdm', vdm, volume)
+            if (vdm === 'does not exist'){
+              delete peers[peer];
+            }else{
+              var harkVolume = harkVolume || 1;
+              peer.videoEl.volume = harkVolume * vdm * vdm;
+            }
+         }
+      });
+  };
 };
 
 var updateCubeWithVideo = function (divID, clientID) {
@@ -93,6 +133,6 @@ var videoAdd = function (video, peer, clientID) {
   // Now send my name to all the peers
   // Add a small timeout so dataChannel has time to be ready
   setTimeout(function(){
-    realFaces.webrtc.webrtc.webrtc.sendDirectlyToAll('realTalkClient','setClientID', realFaces.socket.socketio.yourID);
+    realFaces.webrtc.webrtc.webrtc.sendDirectlyToAll('realTalkClient','setClientID', realFaces.socket.yourID);
   }, 3000);
 };

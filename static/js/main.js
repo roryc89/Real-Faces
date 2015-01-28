@@ -2,6 +2,12 @@
 //can load its own webRTC dependency
 var RealFaces = function(sceneName){
   //will load webRTC deps on event, set to be called when THREE.js scene is done rendering
+  this.roomName = location.pathname;
+
+
+  document.getElementById('roomURL').innerHTML = "realfaces.org" + location.pathname + " <br> Share this URL with your friends so they can join your room!"
+
+
   playerEvents.addListener('start_webRTC', this.initWebRTC);
 
   //construct THREE.js renderer
